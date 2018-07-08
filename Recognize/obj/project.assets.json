@@ -2233,11 +2233,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Berke\\Documents\\Developer\\lc_waikiki\\speech\\api\\Recognize\\Recognize.csproj",
+      "projectUniqueName": "C:\\Users\\Berke\\Documents\\Developer\\lc_waikiki\\internship-poc-project\\Recognize\\Recognize.csproj",
       "projectName": "Recognize",
-      "projectPath": "C:\\Users\\Berke\\Documents\\Developer\\lc_waikiki\\speech\\api\\Recognize\\Recognize.csproj",
+      "projectPath": "C:\\Users\\Berke\\Documents\\Developer\\lc_waikiki\\internship-poc-project\\Recognize\\Recognize.csproj",
       "packagesPath": "C:\\Users\\Berke\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Berke\\Documents\\Developer\\lc_waikiki\\speech\\api\\Recognize\\obj\\",
+      "outputPath": "C:\\Users\\Berke\\Documents\\Developer\\lc_waikiki\\internship-poc-project\\Recognize\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
