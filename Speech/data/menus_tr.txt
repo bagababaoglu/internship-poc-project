@@ -1,0 +1,155 @@
+﻿Kullanıcı ve Yetki Yönetimi
+Çalışanlar
+Çoklu Dil Yönetimi
+Yerel Ayarlar
+Roller
+Departmanlar
+İşletme / Firma
+Uygulamalar
+Parametreler
+Menüler
+Ülkeler
+Dil Tanımları
+Yetkiler
+Oturumlar
+Depo Yapısı
+Depo Tipi
+Hazırlama Alanı
+Depolama Alanı
+Şehirler
+Depo Kapısı
+Ekipman
+Depo
+Ünite Tipi
+Raf
+Lokasyon
+Veri Çevirileri
+Fonksiyonel Alan
+Lokasyon Tipi
+İş İstasyonu
+Bölge
+Fiziksel Kapasite
+Lokasyon Grubu
+Ünite Malzeme Tipi
+Madde
+Madde Birimi
+EAN
+Lot
+Stok
+Taşıma Birimi
+Madde Grubu
+BOM
+Taşıyıcı Ünite Üzerine Transfer
+Taşıma Birimi Transferi
+Stok Transferi
+Tedarikçi Tanımları
+Taşıma Birimi Kayıtları
+Stok Kayıtları
+Kargo Firmaları
+Müşteri Tanımları
+İş Ortağı Tanımları
+İş Ortağı Adresleri
+Depo Konfigürasyonu
+İş Akış Editörü
+Numaratör
+Paketleme Tipi
+Yetki Devirleri
+Dış Uygulamalar
+İş Akışı Eşleştirmeleri
+ASN
+Ürün Alım Operasyonu
+Ürün Alım Pozisyonları
+Ürün Alım 
+Ürün Alım İşlemleri
+Ürün Alım Siparişleri
+Madde Giriş
+Sistem Yönetimi
+Depo Yönetimi
+Ürün Alım
+Depo İçi İşlemler
+Arayüz Çevirileri
+Depolama Stratejisi
+Depo İç Emirler
+Depolama
+Sistem Yönetimi
+Görevler
+Sistem
+Sabit Toplama Lokasyonları
+ASN Rezervasyon
+Madde Çıkış
+İleti Şablonları
+Depo Kapasitesi
+İş Emri Listesi
+Manuel Toplama İsteği Oluşturma
+Manuel Çıkış Emri Oluşturma
+Toplama Stratejisi
+Çıkış Emri Stratejisi
+Çıkış Emirleri
+Toplama
+Görevler
+Çıkış Emri Detayları
+İkmal Stratejisi
+Durumlar
+Aksiyonlar
+Üzerimdeki Ekipmanlar
+Durum Akışı Eşleştirmeleri
+Sistem Kayıtları
+Dağıtım Gözleri
+Giriş
+Kurallar
+Kural İfadeleri
+Yazıcılar
+Etiket Şablonları
+Sürücü İşlemleri
+Araç İşlemleri
+Ürün
+Kural Değişkenleri
+AQL
+Depo Stratejileri
+Veri Yapısı
+İş Ortakları
+Görevler
+Stok Yönetimi
+Transfer İşlemleri
+Görev Listeleri
+Durum Varlık Eşleştirme
+Başka Kullanıcı İle Giriş Yap
+Araç Boşaltma
+Müşteri Kargo Eşleştirme
+Kargo Maliyeti
+İlçe
+İkmal
+İkmal
+Rota
+Müşteri Sevkiyat Rotası
+Çıkış İşlemleri
+Sevkiyat İşlemleri
+Ayrıştırma İşlemleri
+Araç Tipi
+Ayrıştırma
+Yükleme
+Yükleme Stratejisi
+Yükleme Stratejisi Eşleştirme
+Taşıma Birimi Konteynırı
+Sevkiyat
+Yükleme
+Taşıma Görevi
+Yükleme Planı
+Kargo Müşteri Tanımları
+Ayrıştırma Kayıtları
+Sevkiyat
+Ürün Alım  Stratejisi
+Ürün Alım  Stratejisi Eşleştirme
+Stok Miktarı Güncelleme
+Stok Bloke Detayları
+Entegrasyon Kontrol Tanımları
+Inspection Kontrol
+Lokasyon Mantıksal Grup Lokasyon Eşleştirme
+İş Kuyruğu
+Toplama Hesaplama Yöntemi
+Toplama Kuralı
+Toplama Kuralı
+Toplama Planlama Sistemi
+Ayrıştırma İsteği
+Sayım
+Sayım Sınıfı Stratejisi

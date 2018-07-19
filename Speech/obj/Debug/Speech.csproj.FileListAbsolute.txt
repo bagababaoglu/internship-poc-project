@@ -1,0 +1,2 @@
+C:\Users\BERKE.AGABABAOGLU\source\repos\Speech\Speech\obj\Debug\Speech.csprojResolveAssemblyReference.cache
+C:\Users\BERKE.AGABABAOGLU\source\repos\Speech\Speech\obj\Debug\Speech.csproj.CoreCompileInputs.cache

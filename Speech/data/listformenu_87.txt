@@ -1,0 +1,11 @@
+﻿0 Ahmet A. 11 123
+1 Mehmet B. 22 346
+2 Uğur C. 33 457
+3 Hakan D. 44 5687
+4 Emre E. 55 6789
+5 Barış F. 66 780
+6 Berkan G. 77 24
+7 Ege H. 88 789
+8 Hazal J. 99 9769
+9 Zeynep K. 1010 123125
+10 Elif L. 1111 5646
