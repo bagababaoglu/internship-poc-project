@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Net.Http.Headers;
 using System.Net.Http;
 using System.Web;
+using Google.Cloud.Translation.V2;
 
 namespace GoogleCloudSamples
 {
@@ -111,7 +112,30 @@ namespace GoogleCloudSamples
 
         public static bool IsReliable { get => isReliable; set => isReliable = value; }
         public static ArrayList Alternatives { get => alternatives; set => alternatives = value; }
-
+        static string DetectLanguage(string text)
+        {
+            TranslationClient client = TranslationClient.Create();
+            var detection = client.DetectLanguage(text);
+            return detection.Language;
+        }
+        static String Translate(string text, string targetLanguageCode,
+        string sourceLanguageCode)
+        {
+            TranslationClient client = TranslationClient.Create();
+            var response = client.TranslateText(text, targetLanguageCode,
+                sourceLanguageCode);
+            return response.TranslatedText;
+        }
+        static String TranslateWithModel(string text,
+        string targetLanguageCode, string sourceLanguageCode,
+        TranslationModel model)
+        {
+            TranslationClient client = TranslationClient.Create();
+            var response = client.TranslateText(text,
+                targetLanguageCode, sourceLanguageCode, model);
+            // Console.WriteLine("Model: {0}", response.Model);
+            return response.TranslatedText;
+        }
         public static async Task<object> StreamingMicRecognizeAsync(int seconds, String lang)
         {
             if (NAudio.Wave.WaveIn.DeviceCount < 1)
@@ -138,6 +162,7 @@ namespace GoogleCloudSamples
                         InterimResults = true,
                     }
                 });
+            
             // Print responses as they arrive.
             Task printResponses = Task.Run(async () =>
             {
@@ -153,8 +178,10 @@ namespace GoogleCloudSamples
                             alternatives.Add(alternative.Transcript);
                             if (alternative.Confidence > 0)
                             {
-                                possible_words.Add(alternative.Transcript);
-                                Console.WriteLine(alternative.Transcript + " Confidence: " + alternative.Confidence);
+
+                                String Content = TranslateWithModel(alternative.Transcript, "en", DetectLanguage(alternative.Transcript), TranslationModel.Base);
+                                possible_words.Add(Content);
+                                Console.WriteLine(Content + " Confidence: " + alternative.Confidence);
                                 if (alternative.Confidence > 0.8)
                                 {
                                     IsReliable = true;
@@ -205,7 +232,7 @@ namespace GoogleCloudSamples
 
         static bool IsStorageUri(string s) => s.Substring(0, 4).ToLower() == "gs:/";
 
-
+       
     }
 }
 

@@ -85,6 +85,7 @@ Fixed Storage Location
 ASN Reservation
 Outbound
 Message Template
+Collection
 Dashboard
 Storage Capacity
 Manuel Picking Order Creation

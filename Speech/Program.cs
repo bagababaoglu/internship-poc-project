@@ -6,21 +6,25 @@ using System.Threading.Tasks;
 using GoogleCloudSamples;
 using System.Collections;
 using System.IO;
-
+using Google.Cloud.Language.V1;
+using Google.Protobuf.Collections;
 
 namespace Speech
 {
     class Program
     {
-        private static string[] commands;
-        private static string[] menus;
-        private static string[][] list;
-        private static string[] columns;
-        private static String lang;
-        private static int currentMenuIndex = -1;
+        private  string[] commands;
+        private  string[] menus;
+        private  string [][] list;
+        private  string[] columns;
+        private  String lang;
+        private  int currentMenuIndex=-1;
+        private  ArrayList verbs = new ArrayList();
+        private  String nouns = "";
 
-        private static bool immidiate_action = false;
-        public static int openMenu(String command, bool checkImmediate) //This function is for opening a menu.
+
+        private  bool immidiate_action = false;
+        public  int openMenu(String command, bool checkImmediate) //This function is for opening a menu.
         {
             int cmp;
             ArrayList menu_index = new ArrayList();
@@ -38,13 +42,20 @@ namespace Speech
 
                     foreach (int i in menu_index)
                     {
-                        int start_index = menus[i].IndexOf(command, StringComparison.CurrentCultureIgnoreCase);
+                        String[] command_items = command.Split(' ');
 
-                        if (command.Length == menus[i].Length && start_index == 0)
+                        foreach (String command_item in command_items)
                         {
-                            immidiate_menu_index = i;
-                            immidiate_action = true;
+                            int start_index = menus[i].IndexOf(command_item, StringComparison.CurrentCultureIgnoreCase);
+
+                            if (command_item.Length == menus[i].Length && start_index == 0)
+                            {
+                                immidiate_menu_index = i;
+                                immidiate_action = true;
+                            }
+
                         }
+                        
 
                     }
 
@@ -111,7 +122,7 @@ namespace Speech
 
             return 0;
         }
-        public static ArrayList checkMenus(String command)
+        public  ArrayList checkMenus(String command)
         {
 
             ArrayList indexs = new ArrayList();
@@ -130,7 +141,7 @@ namespace Speech
                     foreach (String menu_word in words_in_menuitem)
                     {
                         StringComparison comp = StringComparison.OrdinalIgnoreCase;
-                        if (!word.Equals("içeren", comp) && menu_word.Contains(word, comp) && indexs.IndexOf(i) < 0)
+                        if (!word.Equals("contains", comp) && menu_word.Contains(word, comp) && indexs.IndexOf(i) < 0 && !word.Contains("menu", comp) && word!="")
                         {
 
                             indexs.Add(i);
@@ -148,36 +159,36 @@ namespace Speech
 
             return indexs;
         }
-        public static int populateList(String lang)
+        public  int populateList (String lang)
         {
-
+            
             if (currentMenuIndex == -1)
             {
                 Console.WriteLine("You haven't open any menu yet.");
                 return -1;
             }
-
+           
             try
             {
                 int row_count = 0;
                 int column_count = 0;
                 UTF8Encoding encoding = new UTF8Encoding();
-                string[] lines = System.IO.File.ReadAllLines(Directory.GetCurrentDirectory() + @"\data\listformenu_" + currentMenuIndex + ".txt", encoding);
+                string[] lines = System.IO.File.ReadAllLines(Directory.GetCurrentDirectory() + @"\data\listformenu_" + currentMenuIndex +".txt", encoding);
                 int number_of_rows = lines.Length;
                 int number_of_columns = lines[0].Split(' ').Length;
-                list = new String[number_of_rows][];
-                for (int l = 0; l < number_of_rows; l++)
+                list = new String [number_of_rows][];
+                for(int l=0; l < number_of_rows; l++)
                 {
-                    list[l] = new String[number_of_columns];
+                    list[l] =new String[number_of_columns];
                 }
                 Console.WriteLine("Printing the list..");
                 foreach (String line in lines)
                 {
-                    String[] line_elements = line.Split(' ');
-
+                    String [] line_elements = line.Split(' ');
+                    
                     foreach (String element in line_elements)
                     {
-                        list[row_count][column_count] = element;
+                        list[row_count][column_count]=element;
                         //row_count + "," + column_count + " " +
                         Console.Write(list[row_count][column_count] + " ");
                         column_count++;
@@ -192,7 +203,7 @@ namespace Speech
                 return 0;
 
             }
-            catch (FileNotFoundException)
+            catch(FileNotFoundException)
             {
                 Console.WriteLine("We couldnt find a list for this menu.");
             }
@@ -201,16 +212,16 @@ namespace Speech
 
             return -1;
 
-
+          
         }
-        public static int getColumns()
+        public  int getColumns()
         {
 
             UTF8Encoding encoding = new UTF8Encoding();
             try
             {
                 columns = System.IO.File.ReadAllLines(Directory.GetCurrentDirectory() + @"\data\columnforlist_" + currentMenuIndex + "_" + lang + ".txt", encoding)[0].Split(' ');
-
+               
                 return 0;
             }
             catch (FileNotFoundException)
@@ -218,14 +229,14 @@ namespace Speech
                 Console.WriteLine("We couldn't find a column information for this list.");
                 return -1;
             }
+           
 
 
 
 
-
-
+            
         }
-        public static ArrayList findColumn(String[] columns, String command_target)
+       public  ArrayList findColumn(String [] columns ,String command_target)
         {
             StringComparison comp = StringComparison.OrdinalIgnoreCase;
             ArrayList indexs = new ArrayList();
@@ -248,15 +259,15 @@ namespace Speech
             {
                 return indexs;
             }
-
-
-        }
-
-
-        public static int filter(String command_target) // This function filters the given list 
-                                                        //in terms of the column and reference.
-
-        // command template "X listesini filtrele"
+         
+               
+            }
+            
+        
+        public  int filter(String command_target) // This function filters the given list 
+            //in terms of the column and reference.
+           
+            // command template "X listesini filtrele"
         {
             if (populateList(lang) == 0)
             {
@@ -274,7 +285,7 @@ namespace Speech
                     return -1;
                 }
                 ArrayList indexs = findColumn(columns, command_target);
-                if (indexs == null)
+                if(indexs == null)
                 {
                     Console.WriteLine("We couldn't find a match");
                     return -1;
@@ -334,25 +345,14 @@ namespace Speech
             else
             {
                 return -1;
-            }
-
-
-
-
-
-
-        }
-        public static int implementFunction(int index, String command) //This function is called by checkCommands if it finds a 
+            }}
+        
+        public  int implementFunction(int index, String command) //This function is called by checkCommands if it finds a 
                                                                        //match. It splits the command into command_target and command_function. command_function is always same we have
                                                                        //limited amounth of functions. It uses switch case statement to decide which function to implement. And then
                                                                        //implements the function accordinng to command_target. 
         {
-            String command_target;
-            //String command_function;
-            int i = command.IndexOf(commands[index]);
-            int old_length = command.Length;
-            command_target = command.Substring(0, (old_length - (old_length - i)) - 1);
-            //command_function= command.Substring(i,old_length-i);
+            String command_target=command;
             int r = -1;
             switch (lang)  //choosing the language for implementing command.
             {
@@ -365,17 +365,17 @@ namespace Speech
                             break;
                         case "menüsünü aç":
                             Console.WriteLine("I implemented funtion. " + "menüsünü aç");
-                            r = openMenu(command_target, true);
+                            r=openMenu(command_target, true);
                             break;
                         case "filtrele":
                             Console.WriteLine("I implemented funtion. " + "filtrele");
-                            r = filter(command_target);
-
+                            r =filter(command_target);
+                       
                             break;
                         case "login":
                             Console.WriteLine("I implemented funtion. " + "login");
                             break;
-
+                       
                         default:
                             Console.WriteLine("Default");
                             break;
@@ -391,11 +391,11 @@ namespace Speech
                     switch (commands[index])
                     {
                         case ("open"):
-                            Console.WriteLine("I implemented funtion. " + "menüsünü aç");
+                            Console.WriteLine("I implemented funtion. " + "open");
                             r = openMenu(command_target, true);
                             break;
                         case ("filter"):
-                            Console.WriteLine("I implemented funtion. " + "filtrele");
+                            Console.WriteLine("I implemented funtion. " + "filter");
                             r = filter(command_target);
                             break;
 
@@ -414,11 +414,19 @@ namespace Speech
 
             return r;
         }
-        public static int checkCommands(String command) //this function is for checking the existing commands 
+        public  int checkCommands(String command) //this function is for checking the existing commands 
                                                         //to match the given command. If it finds a match it implements the function if not ask the user input.
         {
+            int z=getVerbs(command);
+            int l=getNouns(command);
             StringComparison comp = StringComparison.OrdinalIgnoreCase;
-            if (command.Length != 0)
+            if (z==-1 || l == -1)
+            {
+                Console.WriteLine("There was a problem analyzing the text");
+                return -1;
+            }
+
+            if (verbs.Count != 0)
             {
                 ArrayList indexs = new ArrayList();
                 int cmp;
@@ -430,11 +438,15 @@ namespace Speech
                 {
 
                     index++;
-
-                    if (command.Contains(actual_command, comp))
+                    foreach (String verb in verbs)
                     {
-                        indexs.Add(index);
+                        if (verb.Contains(actual_command, comp))
+                        {
+                            indexs.Add(index);
+                        }
+
                     }
+                    
                 }
 
 
@@ -442,7 +454,7 @@ namespace Speech
                 {
                     foreach (int i in indexs)
                     {
-                        Console.WriteLine(counter + ". Command is : " + command + ". That is corresponds to: " + commands[i] + " in system");
+                        Console.WriteLine("Command is : " + command + ". That is corresponds to: " + commands[i] + " in system");
 
                         if (Recognize.IsReliable)
                         {
@@ -461,8 +473,8 @@ namespace Speech
 
                         if (cmp == 0)
                         {
-                            implementFunction(i, command);
-
+                            implementFunction(i, nouns);
+                           
                         }
                         else
                         {
@@ -486,10 +498,10 @@ namespace Speech
                 }
                 else
                 {
-                    if (command.Contains("içeren", comp) && command.Contains("menüyü aç", comp))
+                    if (command.Contains("contains", comp) && command.Contains("open", comp))
                     {
-                        int end_index = command.IndexOf("içeren", comp);
-                        String search_word = command.Substring(0, (command.Length - (command.Length - end_index)) - 1);
+
+                        String search_word = nouns;
                         openMenu(search_word, false);
                     }
                     else
@@ -542,10 +554,10 @@ namespace Speech
             }
             return -1;
         }
+       
 
-
-
-        public static int implementCommand(ArrayList word_list) //This function is called after getting a command from user. 
+       
+        public  int implementCommand(ArrayList word_list) //This function is called after getting a command from user. 
                                                                 //If user approves it calls checkCommands to check existing commands. Else it asks user to try again.
         {
 
@@ -561,9 +573,11 @@ namespace Speech
             }
             else
             {
-                Console.WriteLine("We detect " + word_list.Count + " commands. Do you want to continue? y/n");
-                t = Console.ReadLine();
-                cmp = String.Compare(t, "y", ignoreCase: true);
+                //Console.WriteLine("We detect " + word_list.Count + " commands. Do you want to continue? y/n");
+                //t = Console.ReadLine();
+                //t = "y";
+                //cmp = String.Compare(t, "y", ignoreCase: true);
+                cmp = 0;
             }
 
 
@@ -572,7 +586,7 @@ namespace Speech
 
                 foreach (String command in word_list)
                 {
-                    checkCommands(command);
+                  checkCommands(command);
                 }
             }
             else
@@ -605,11 +619,8 @@ namespace Speech
             return 0;
         }
 
-        public static ArrayList getCommand(String l) //This function calls googles api to get a verbal command from user.
+        public  ArrayList getCommand(String l) //This function calls googles api to get a verbal command from user.
         {
-
-
-
             ArrayList word_list = new ArrayList();
             Task<object> task = Recognize.StreamingMicRecognizeAsync(5, l);
             task.Wait();
@@ -619,39 +630,73 @@ namespace Speech
             return word_list;
         }
 
+       public  int getVerbs(String command)
+        {
+            RepeatedField<Token> tokens = Analyze.AnalyzeSyntaxFromText(command);
+            verbs = new ArrayList();
+
+            foreach (var token in tokens)
+            {
+               
+                if ((int)token.PartOfSpeech.Tag != 6)
+                {
+                    verbs.Add(token.Text.Content);
+                }
+
+            }
+            if (verbs.Count == 0)
+            {
+                return -1;
+            }else
+            {
+                return 0;
+            }
+          
+        }
+        public  int getNouns(String command)
+        {
+            RepeatedField<Token> tokens = Analyze.AnalyzeSyntaxFromText(command);
+            nouns = "";
+            foreach (var token in tokens)
+            {
+
+                if ((int)token.PartOfSpeech.Tag == 1 || (int)token.PartOfSpeech.Tag == 6 || (int)token.PartOfSpeech.Tag == 11)
+                {
+                    nouns=nouns+token.Text.Content+" ";
+                }
+
+            }
+            if (nouns == null)
+            {
+                return -1;
+            }else
+            {
+                return 0;
+            }}
+
+
         public static int Main(string[] args)
         {
-
-            Console.WriteLine("Please enter a valid language code.");
-            lang = Console.ReadLine();
-            if (lang == "")
+            Program p = new Program();
+            p.lang = "en";
+            //error check
+            if (p.populateCommands()==-1 || p.populateMenus() == -1)
             {
-                Console.WriteLine("Error");
-                return 1;
-            }
-
-
-
-            if (populateCommands() == -1 || populateMenus() == -1)
-            {
-                
                 Console.WriteLine("Program terminated.");
                 return -1;
+                
             }
-
-
+            //test cases
             ArrayList word_list = new ArrayList();
-            word_list.Add("Toplama open menu");
-            word_list.Add("çalışanlar name Hakan filter");
-            implementCommand(word_list);
-
-            while (true)
+            word_list.Add("Toplama menüsünü aç.");
+            word_list.Add("Hakan isimli çalışanları filtreler misin?");
+            p.implementCommand(word_list);
+            
+            //main program
+            while (false)
             {
 
-                //Console.WriteLine("Press any key for giving a command.");
-                //String t = Console.ReadLine();
-                word_list = getCommand(lang);
-
+                word_list = p.getCommand(p.lang);
                 if (word_list.Count > 0 && ((String.Compare(((String)word_list[0]), "exit", ignoreCase: true) == 0) ||
                     (String.Compare(((String)word_list[0]), "kapat", ignoreCase: true) == 0)))
                 {
@@ -660,7 +705,7 @@ namespace Speech
                 }
                 if (word_list.Count > 0)
                 {
-                    implementCommand(word_list);
+                    p.implementCommand(word_list);
 
                 }
 
@@ -674,8 +719,8 @@ namespace Speech
 
 
         }
-        public static int populateCommands() //This function called at the beginning of the program to populate commands 
-                                             //into arraylist that are currently stored in text file.
+        public  int populateCommands() //This function called at the beginning of the program to populate commands 
+                                              //into arraylist that are currently stored in text file.
         {
             UTF8Encoding encoding = new UTF8Encoding();
             try
@@ -689,12 +734,12 @@ namespace Speech
                 Console.WriteLine("We couldn't find available commands.");
                 return -1;
             }
-
-
+           
+            
 
         }
-        public static int populateMenus() //This function called at the beginning of the program to populate menus 
-                                          //into arraylist that are currently stored in text file.
+        public  int populateMenus() //This function called at the beginning of the program to populate menus 
+                                           //into arraylist that are currently stored in text file.
         {
             UTF8Encoding encoding = new UTF8Encoding();
             try
@@ -708,7 +753,7 @@ namespace Speech
                 Console.WriteLine("We couldn't find available menus.");
                 return -1;
             }
-
+            
         }
     }
 }
