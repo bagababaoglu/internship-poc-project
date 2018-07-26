@@ -141,9 +141,6 @@ Where command is one of
             // [START analyze_syntax_from_string]
             public static RepeatedField<Token> AnalyzeSyntaxFromText(string text)
             {
-           
-
-
             try
             {
                 var client = LanguageServiceClient.Create();
@@ -151,11 +148,12 @@ Where command is one of
 
 
                 {
-                    Content = TranslateWithModel(text, "en", DetectLanguage(text), TranslationModel.NeuralMachineTranslation),
+                    Content = TranslateWithModel(text, "en", DetectLanguage(text), TranslationModel.ServiceDefault),
                     Type = Document.Types.Type.PlainText
                 },
-                new Features() { ExtractSyntax = true });
-                //WriteSentences(response.Sentences, response.Tokens);
+                new Features() { ExtractSyntax = true, ExtractEntities =true});
+                WriteSentences(response.Sentences, response.Tokens);
+             
                 return response.Tokens;
 
             } catch (Exception e)

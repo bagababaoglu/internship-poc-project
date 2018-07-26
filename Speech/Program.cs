@@ -8,6 +8,7 @@ using System.Collections;
 using System.IO;
 using Google.Cloud.Language.V1;
 using Google.Protobuf.Collections;
+using Newtonsoft.Json;
 
 namespace Speech
 {
@@ -21,7 +22,9 @@ namespace Speech
         private  int currentMenuIndex=-1;
         private  ArrayList verbs = new ArrayList();
         private  String nouns = "";
-
+        private String input = "";
+        List<data> _data = new List<data>();
+        
 
         private  bool immidiate_action = false;
         public  int openMenu(String command, bool checkImmediate) //This function is for opening a menu.
@@ -394,9 +397,13 @@ namespace Speech
                             Console.WriteLine("I implemented funtion. " + "open");
                             r = openMenu(command_target, true);
                             break;
+                        case ("list"):
+                        case ("get"):
+                        case ("bring"):
                         case ("filter"):
+                        case ("search"):
                             Console.WriteLine("I implemented funtion. " + "filter");
-                            r = filter(command_target);
+                            r = filter(command_target);                            
                             break;
 
                         default:
@@ -410,13 +417,125 @@ namespace Speech
                     Console.WriteLine("Language is not recognized.");
                     break;
             }
+            Console.WriteLine("Are you satisfied with the service? y/n");
+            String s = Console.ReadLine();
 
+            //for indexing.
+            switch (s)
+            {
+                case ("y"):
+                    addIndex(index);
+                    break;
+                case ("n"):
+                    Console.WriteLine("We will try to improve our service. Thank you for your comment.");
+                    break;
+                default:
+                    Console.WriteLine("Invalid input.");
+                    break;
+            }
+           
 
             return r;
+        }
+        public class data
+        {
+            public string _command { get; set; }
+            public ArrayList _verbs { get; set; }
+            public string _nouns { get; set; }
+            
+            public int _index { get; set; }
+
+        }
+        public int populateFrequentCommands()
+
+        {
+            try
+            {
+                UTF8Encoding encoding = new UTF8Encoding();
+                String json = System.IO.File.ReadAllText(Directory.GetCurrentDirectory() + @"\data\frequent_commands.json", encoding);
+                if (json.Contains("_command"))
+                {
+                    data[] temp = JsonConvert.DeserializeObject<data[]>(json);
+                    _data = temp.ToList<data>();
+                    
+                }
+                
+                return 0;
+
+            } catch (Exception e)
+            {
+                Console.WriteLine("There was a problem reading frequent commands from JSON.");
+                return -1;
+            }
+           
+
+          
+        }
+        public int addIndex(int index)
+        {
+            if (_data ==null)
+            {
+                Console.WriteLine("Problem while adding an index. There is no list.");
+                return -1;
+            }
+            data temp = new data()
+            {
+                _command = input,
+                _verbs = verbs,
+                _nouns = nouns,
+                _index = index
+
+            };
+            Boolean isExist=false;
+           
+            foreach (data d in _data)
+            {
+                if (d._command.Equals(temp._command) && d._nouns.Equals(temp._nouns) && d._verbs.Count==temp._verbs.Count)
+                {
+                    isExist = true;
+                    break;
+                }
+            }
+
+            if (isExist)
+            { 
+                Console.WriteLine("This data already exist in the frequent commands.");
+            }
+            else
+            {
+                _data.Add(temp);
+            }
+            return 0;
+        }
+        public int checkFrequentCommands(String command)
+        {
+            foreach(data d in _data)
+            {
+                if (d._command.Equals(command))
+                {
+                    Console.WriteLine("I found your command in the frequent commands.");
+                    verbs = d._verbs;
+                    nouns = d._nouns;
+                    input = command;
+                    implementFunction(d._index, nouns);
+                    
+                    return 0;
+
+                }
+
+            }
+
+
+            return -1;
         }
         public  int checkCommands(String command) //this function is for checking the existing commands 
                                                         //to match the given command. If it finds a match it implements the function if not ask the user input.
         {
+            int ch=checkFrequentCommands(command);
+            if (ch == 0)
+            {
+                return 0;
+            }
             int z=getVerbs(command);
             int l=getNouns(command);
             StringComparison comp = StringComparison.OrdinalIgnoreCase;
@@ -432,7 +551,7 @@ namespace Speech
                 int cmp;
                 int index = -1;
                 int counter = 1;
-
+                input = command;
 
                 foreach (String actual_command in commands)
                 {
@@ -443,6 +562,7 @@ namespace Speech
                         if (verb.Contains(actual_command, comp))
                         {
                             indexs.Add(index);
+                            
                         }
 
                     }
@@ -458,14 +578,14 @@ namespace Speech
 
                         if (Recognize.IsReliable)
                         {
-
+                            
                             cmp = 0;
                             Recognize.IsReliable = false;
 
                         }
                         else
                         {
-                            Console.WriteLine("Do you want to continue? y/n");
+                            Console.WriteLine("Do you want to continue? y/n"); 
                             String t3 = Console.ReadLine();
                             cmp = String.Compare(t3, "y", ignoreCase: true);
 
@@ -508,41 +628,48 @@ namespace Speech
                     {
                         Recognize.IsReliable = false;
                         Console.WriteLine("We couldn't match your command.");
-                        Console.WriteLine("Did you mean one of these? y/n");
-                        int count_alternative = 0;
-                        foreach (String alternative in Recognize.Alternatives)
+                        if (Recognize.Alternatives.Count != 0)
                         {
-                            Console.WriteLine(count_alternative + ". " + alternative);
-                            count_alternative++;
-                        }
-                        String t5 = Console.ReadLine();
-                        cmp = String.Compare(t5, "y", ignoreCase: true);
-
-                        if (cmp == 0)
-                        {
-                            Console.WriteLine("Please enter the number.");
-                            t5 = Console.ReadLine();
-                            int k;
-                            if (Int32.TryParse(t5, out k) && k < Recognize.Alternatives.Count)
+                            Console.WriteLine("Did you mean one of these? y/n");
+                            int count_alternative = 0;
+                            foreach (String alternative in Recognize.Alternatives)
                             {
-                                checkCommands((String)Recognize.Alternatives[k]);
+                                Console.WriteLine(count_alternative + ". " + alternative);
+                                count_alternative++;
+                            }
+                            String t5 = Console.ReadLine();
+                            cmp = String.Compare(t5, "y", ignoreCase: true);
+
+                            if (cmp == 0)
+                            {
+                                Console.WriteLine("Please enter the number.");
+                                t5 = Console.ReadLine();
+                                int k;
+                                if (Int32.TryParse(t5, out k) && k < Recognize.Alternatives.Count)
+                                {
+                                    checkCommands((String)Recognize.Alternatives[k]);
+                                }
+                                else
+                                {
+                                    Console.WriteLine("You have entered an invalid index.");
+
+                                }
+
+
                             }
                             else
                             {
-                                Console.WriteLine("You have entered an invalid index.");
-
+                                Console.WriteLine("Trying to find a menu..");
+                                openMenu(command, true);
                             }
 
 
-                        }
-                        else
+                        }else
                         {
-                            Console.WriteLine("Trying to find a menu..");
-                            openMenu(command, true);
+                            Console.WriteLine("There are no alternatives for your command.");
                         }
-
-
                     }
+                   
 
                 }
 
@@ -586,7 +713,8 @@ namespace Speech
 
                 foreach (String command in word_list)
                 {
-                  checkCommands(command);
+                    
+                    checkCommands(command);
                 }
             }
             else
@@ -674,13 +802,19 @@ namespace Speech
                 return 0;
             }}
 
+        public int search (ArrayList items, String search_item)
+        {
+            
 
+
+            return 0;
+        }
         public static int Main(string[] args)
         {
             Program p = new Program();
             p.lang = "en";
             //error check
-            if (p.populateCommands()==-1 || p.populateMenus() == -1)
+            if (p.populateCommands()==-1 || p.populateMenus() == -1 || p.populateFrequentCommands()==-1)
             {
                 Console.WriteLine("Program terminated.");
                 return -1;
@@ -689,7 +823,8 @@ namespace Speech
             //test cases
             ArrayList word_list = new ArrayList();
             word_list.Add("Toplama menüsünü aç.");
-            word_list.Add("Hakan isimli çalışanları filtreler misin?");
+            word_list.Add("Hakan çalışanını ara.");
+            //Console.WriteLine(word_list);
             p.implementCommand(word_list);
             
             //main program
@@ -711,8 +846,9 @@ namespace Speech
 
 
             }
-
-
+            //write frequent commands to a file.
+            string json = JsonConvert.SerializeObject(p._data.ToArray());
+            System.IO.File.WriteAllText(Directory.GetCurrentDirectory() + @"\data\frequent_commands.json", json);
             Console.ReadLine();
 
             return 0;

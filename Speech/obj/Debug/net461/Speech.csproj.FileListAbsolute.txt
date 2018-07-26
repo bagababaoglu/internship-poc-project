@@ -81,3 +81,4 @@ C:\Users\BERKE.AGABABAOGLU\Documents\git\internship-poc-project\Speech\bin\Debug
 C:\Users\BERKE.AGABABAOGLU\Documents\git\internship-poc-project\Speech\bin\Debug\net461\Google.Cloud.Language.V1.dll
 C:\Users\BERKE.AGABABAOGLU\Documents\git\internship-poc-project\Speech\bin\Debug\net461\Google.Api.Gax.Rest.dll
 C:\Users\BERKE.AGABABAOGLU\Documents\git\internship-poc-project\Speech\bin\Debug\net461\Google.Cloud.Translation.V2.dll
+C:\Users\BERKE.AGABABAOGLU\Documents\git\internship-poc-project\Speech\obj\Debug\net461\Speech.csprojResolveAssemblyReference.cache
