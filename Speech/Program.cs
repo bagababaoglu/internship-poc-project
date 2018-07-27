@@ -247,10 +247,14 @@ namespace Speech
             foreach (String column in columns)
             {
                 i++;
-                if (command_target.Contains(column, comp))
+                foreach(String com in command_target.Split(' '))
                 {
-                    indexs.Add(i);
+                    if (column.Contains(com, comp))
+                    {
+                        indexs.Add(i);
+                    }
                 }
+               
             }
 
             if (indexs.Count == 0)
@@ -687,12 +691,8 @@ namespace Speech
         public  int implementCommand(ArrayList word_list) //This function is called after getting a command from user. 
                                                                 //If user approves it calls checkCommands to check existing commands. Else it asks user to try again.
         {
-
             int cmp;
             String t = "y";
-
-
-
             if (Recognize.IsReliable)
             {
                 cmp = 0;
@@ -753,8 +753,7 @@ namespace Speech
             Task<object> task = Recognize.StreamingMicRecognizeAsync(5, l);
             task.Wait();
             Object result = task.Result;
-            word_list = (ArrayList)result;
-
+            word_list = (ArrayList)result;  
             return word_list;
         }
 
@@ -766,7 +765,7 @@ namespace Speech
             foreach (var token in tokens)
             {
                
-                if ((int)token.PartOfSpeech.Tag != 6)
+                if ((int)token.PartOfSpeech.Tag == 11 || (int)token.PartOfSpeech.Tag == 1 || (int)token.PartOfSpeech.Tag == 2 || (int)token.PartOfSpeech.Tag == 3)
                 {
                     verbs.Add(token.Text.Content);
                 }
@@ -812,6 +811,8 @@ namespace Speech
         public static int Main(string[] args)
         {
             Program p = new Program();
+            Console.WriteLine("Please write the language that you want to speak.");
+            String l=Console.ReadLine();
             p.lang = "en";
             //error check
             if (p.populateCommands()==-1 || p.populateMenus() == -1 || p.populateFrequentCommands()==-1)
@@ -822,16 +823,17 @@ namespace Speech
             }
             //test cases
             ArrayList word_list = new ArrayList();
+            /*
             word_list.Add("Toplama menüsünü aç.");
-            word_list.Add("Hakan çalışanını ara.");
+            word_list.Add("Hakan isimli çalışanını getir.");
             //Console.WriteLine(word_list);
             p.implementCommand(word_list);
-            
+            */
             //main program
-            while (false)
+            while (true)
             {
 
-                word_list = p.getCommand(p.lang);
+                word_list = p.getCommand(l);
                 if (word_list.Count > 0 && ((String.Compare(((String)word_list[0]), "exit", ignoreCase: true) == 0) ||
                     (String.Compare(((String)word_list[0]), "kapat", ignoreCase: true) == 0)))
                 {

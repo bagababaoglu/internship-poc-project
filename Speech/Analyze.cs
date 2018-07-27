@@ -148,11 +148,13 @@ Where command is one of
 
 
                 {
+
                     Content = TranslateWithModel(text, "en", DetectLanguage(text), TranslationModel.ServiceDefault),
+                    //Content = text,
                     Type = Document.Types.Type.PlainText
                 },
                 new Features() { ExtractSyntax = true, ExtractEntities =true});
-                WriteSentences(response.Sentences, response.Tokens);
+                //WriteSentences(response.Sentences, response.Tokens);
              
                 return response.Tokens;
 
@@ -301,10 +303,20 @@ Where command is one of
                 TranslationClient client = TranslationClient.Create();
             try
             {
-                var response = client.TranslateText(text,targetLanguageCode, sourceLanguageCode, model);
+                
+                if (DetectLanguage(text).Equals("en"))
+                {
+                    return text;
+                }
+                else
+                {
+                    var response = client.TranslateText(text, targetLanguageCode, sourceLanguageCode, model);
+                    return response.TranslatedText;
+                }
+                
                 // Console.WriteLine("Model: {0}", response.Model);
 
-                return response.TranslatedText;
+                
             }
             catch (Exception e)
             {

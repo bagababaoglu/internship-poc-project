@@ -175,22 +175,48 @@ namespace GoogleCloudSamples
                     {
                         foreach (var alternative in result.Alternatives)
                         {
-                            alternatives.Add(alternative.Transcript);
-                            if (alternative.Confidence > 0)
+                            if (DetectLanguage(alternative.Transcript).Equals("en"))
                             {
+                                alternatives.Add(alternative.Transcript);
+                                if (alternative.Confidence > 0)
+                                {
 
-                                String Content = TranslateWithModel(alternative.Transcript, "en", DetectLanguage(alternative.Transcript), TranslationModel.Base);
-                                possible_words.Add(Content);
-                                Console.WriteLine(Content + " Confidence: " + alternative.Confidence);
-                                if (alternative.Confidence > 0.8)
-                                {
-                                    IsReliable = true;
+                                    
+                                    String Content = alternative.Transcript; 
+                                    possible_words.Add(Content);
+                                    Console.WriteLine(Content + " Confidence: " + alternative.Confidence);
+                                    if (alternative.Confidence > 0.8)
+                                    {
+                                        IsReliable = true;
+                                    }
+                                    else
+                                    {
+                                        IsReliable = false;
+                                    }
                                 }
-                                else
+
+                            }
+                            else
+                            {
+                                alternatives.Add(alternative.Transcript);
+                                if (alternative.Confidence > 0)
                                 {
-                                    IsReliable = false;
+
+                                    String Content = TranslateWithModel(alternative.Transcript, "en", DetectLanguage(alternative.Transcript), TranslationModel.NeuralMachineTranslation);
+                                    //String Content = alternative.Transcript; 
+                                    possible_words.Add(Content);
+                                    Console.WriteLine(Content + " Confidence: " + alternative.Confidence);
+                                    if (alternative.Confidence > 0.8)
+                                    {
+                                        IsReliable = true;
+                                    }
+                                    else
+                                    {
+                                        IsReliable = false;
+                                    }
                                 }
                             }
+                           
 
 
 
